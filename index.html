@@ -15,7 +15,7 @@
 
 
 
-    <div id="container" style="position: relative; width: 700px; height: 500px;">
+    <div id="container" style="position: relative; width: 1400px; height: 1000px;">
         <!-- MAP HERE -->
     </div>
 
@@ -23,38 +23,25 @@
         <!-- LIST OF COUNTRIES HERE -->
         <p id="list"></p>
     </ul>
-    <p id="length">hello</p>
+
 
 
     <script>
-        dataset = {}; //Dataset of maps with information
+        dataset = {}; // Dataset of maps with information.
 
-        var listalista = "";
+        // Fill dataset.
         for (key in countryData[0]) {
-
             if (countryData[0][key] != null) {
                 dataset[key] = {
                     fillColor: "#02386F"
                 };
             }
         }
-        console.log(dataset);
+        console.log(dataset); //DEBUG
 
-        //TEST DEBUG TODO
-        function hello() {
-            var length_ = ("Length of countrydata: " + Object.keys(countryData[0]).length);
-
-            document.getElementById('length').innerHTML = length_;
-        }
-        hello();
-        //TEST DEBUG TODO
-
-
-        //
-        //Instantiate Map
+        //Instantiate Map.
         var map = new Datamap({
             element: document.getElementById('container'),
-
             fills: {
                 defaultFill: '#F5F5F5'
             },
@@ -65,18 +52,25 @@
                 popupTemplate: function(geo, data) {
 
                     //If not data for country don't show popup
-                    if (countryData[0][geo.properties.iso] == null) {
+                    if (countryData[0][geo.id] == null) {
                         return;
                     }
 
                     //Popup info
                     return ['<div class="hoverinfo"><strong>',
                         geo.properties.name,
-                        ': ' + getData(geo.properties.iso),
+                        ': ' + getData(geo.id),
                         '</strong></div>'
                     ].join('');
                 }
+            },
+            //On click function.
+            done: function(datamap) {
+                datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+                    redirectTo(geography.id); //TODO
+                });
             }
+
         });
 
         //
@@ -89,9 +83,20 @@
             }
             document.getElementById('list').innerHTML = listOfCountries;
         };
-        makelist(map.worldTopo.objects.world.geometries);
+        //makelist(map.worldTopo.objects.world.geometries);
 
-        //
+        // Find link and redirect
+        function redirectTo(countryCode) {
+            if (USA) {
+                zoomIn(USA);
+            } else if (hasLink(countryCode)) {
+                redirect(link);
+            } else {
+                return;
+            }
+        }
+
+
         // Get data from countrydata.js
         function getData(countryCode) {
 
