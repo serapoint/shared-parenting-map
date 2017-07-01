@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Interactive Worldmap</title>
+
+</head>
+
+<body>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+    <script src="countrydata.js"></script>
+    <script src="/datamaps.world.hires.min.js"></script>
+
+
+
+    <div id="container" style="position: relative; width: 700px; height: 500px;">
+        <!-- MAP HERE -->
+    </div>
+
+    <ul>
+        <!-- LIST OF COUNTRIES HERE -->
+        <p id="list"></p>
+    </ul>
+    <p id="length">hello</p>
+
+
+    <script>
+        dataset = {}; //Dataset of maps with information
+
+        var listalista = "";
+        for (key in countryData[0]) {
+
+            if (countryData[0][key] != null) {
+                dataset[key] = {
+                    fillColor: "#02386F"
+                };
+            }
+        }
+        console.log(dataset);
+
+        //TEST DEBUG TODO
+        function hello() {
+            var length_ = ("Length of countrydata: " + Object.keys(countryData[0]).length);
+
+            document.getElementById('length').innerHTML = length_;
+        }
+        hello();
+        //TEST DEBUG TODO
+
+
+        //
+        //Instantiate Map
+        var map = new Datamap({
+            element: document.getElementById('container'),
+
+            fills: {
+                defaultFill: '#F5F5F5'
+            },
+            data: dataset,
+
+            geographyConfig: {
+                //Popup information
+                popupTemplate: function(geo, data) {
+
+                    //If not data for country don't show popup
+                    if (countryData[0][geo.properties.iso] == null) {
+                        return;
+                    }
+
+                    //Popup info
+                    return ['<div class="hoverinfo"><strong>',
+                        geo.properties.name,
+                        ': ' + getData(geo.properties.iso),
+                        '</strong></div>'
+                    ].join('');
+                }
+            }
+        });
+
+        //
+        //Create list of ocuntries
+        function makelist(geometries) {
+            var listOfCountries = "";
+            for (i = 0; i < geometries.length; i++) {
+                listOfCountries += "Code: " + geometries[i].properties.iso + " || Name of country: " + geometries[i].properties.name +
+                    "<br>";
+            }
+            document.getElementById('list').innerHTML = listOfCountries;
+        };
+        makelist(map.worldTopo.objects.world.geometries);
+
+        //
+        // Get data from countrydata.js
+        function getData(countryCode) {
+
+            if (countryData[0][countryCode] === null) {
+                return "No data available for this country";
+            } else {
+                return countryData[0][countryCode];
+            }
+        };
+    </script>
+</body>
+
+
+</html>
