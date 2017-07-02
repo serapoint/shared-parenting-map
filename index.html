@@ -8,105 +8,93 @@
 
 <body>
 
+    <!-- Custom Scripts -->
+    <script src="/scripts/redirect.js"></script>
+    <script src="/scripts/getText.js"></script>
+
+    <!-- Country data -->
+    <script src="countrydata.js"></script>
+
+    <!-- Datamap + topojson + D3 -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-    <script src="countrydata.js"></script>
-    <script src="/datamaps.world.hires.min.js"></script>
+    <script src="/datamaps.world.js"></script>
 
 
 
-    <div id="container" style="position: relative; width: 100vh; height: 70vh;">
+    <div id="container" style="position: relative;">
         <!-- MAP HERE -->
     </div>
 
-
-
     <script>
-        dataset = {}; // Dataset of maps with information.
+        dataset = {}; // Dataset of countries with information.
 
         // Fill dataset.
         for (key in countryData[0]) {
-            if (countryData[0][key][0] != null) {
+            if (countryData[0][key].text != null) {
                 dataset[key] = {
-                    fillColor: "#02386F"
+                    fillColor: "#529b13"
                 };
             }
         }
+        console.log(dataset);
 
 
-        //Instantiate Map.
+        // Instantiate Map.
         var map = new Datamap({
             element: document.getElementById('container'),
             fills: {
                 defaultFill: '#F5F5F5'
             },
             data: dataset,
+            responsive: true,
 
             geographyConfig: {
-                //Popup information
+                // Popup information
                 popupTemplate: function(geo, data) {
 
-                    //If not data for country don't show popup
-                    if (countryData[0][geo.id] == null) {
+                    // If not data for country don't show popup.
+                    if (countryData[0][geo.id].text == null) {
                         return;
                     }
 
-                    //Popup info
+                    // Popup info.
                     return ['<div class="hoverinfo"><strong>',
                         geo.properties.name,
-                        ': ' + getData(geo.id),
-                        '</strong></div>'
+                        ':</strong> ' + getText(geo.id),
+                        '</div>'
                     ].join('');
-                }
+                },
+
+
+                highlightFillColor: function(data) {
+                    if (!data.fillColor) {
+                        return '#dbdbdb';
+                    } else {
+                        return '#3d740d';
+                    }
+                },
+                highlightBorderWidth: 0,
+
             },
 
-            //On click
+            // On click.
             done: function(datamap) {
                 datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-                    redirectTo(geography.id); //TODO
+                    redirect(geography.id); //TODO
                 });
             }
 
         });
 
-        // Find link in countrydata.js and redirect
-        function redirectTo(countryCode) {
-            if (countryData[0][countryCode][1] === null) {
-                return;
-            } else {
-                window.location.href = countryData[0][countryCode][1];
-            }
-        };
 
-
-        // Get text from countrydata.js
-        function getData(countryCode) {
-
-            if (countryData[0][countryCode][0] === null) {
-                return "No data available for this country";
-            } else {
-                return countryData[0][countryCode][0];
-            }
-        };
-
-        //DEBUGGIN' from here down bby
-
-        //Show dataset created for the colouring
-        console.log(dataset);
-
-        //Create list of ocuntries
-        function makelist(geometries) {
-            var listOfCountries = "";
-            for (i = 0; i < geometries.length; i++) {
-                listOfCountries += "Code: " + geometries[i].properties.iso + " || Name of country: " + geometries[i].properties.name +
-                    "<br>";
-            }
-            console.log(listOfCountries)
-        };
-        //makelist(map.worldTopo.objects.world.geometries);
+        //Resize the map on window resize.
+        d3.select(window).on('resize', function() {
+            map.resize();
+        });
 
     </script>
-</body>
 
+</body>
 
 </html>
