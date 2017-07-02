@@ -15,7 +15,7 @@
 
 
 
-    <div id="container" style="position: relative; width: 1400px; height: 1000px;">
+    <div id="container" style="position: relative; width: 100vh; height: 70vh;">
         <!-- MAP HERE -->
     </div>
 
@@ -31,7 +31,7 @@
 
         // Fill dataset.
         for (key in countryData[0]) {
-            if (countryData[0][key] != null) {
+            if (countryData[0][key][0] != null) {
                 dataset[key] = {
                     fillColor: "#02386F"
                 };
@@ -73,8 +73,8 @@
 
         });
 
-        //
-        //Create list of ocuntries
+
+        //Create list of ocuntries //DEBUG - TEST
         function makelist(geometries) {
             var listOfCountries = "";
             for (i = 0; i < geometries.length; i++) {
@@ -85,25 +85,24 @@
         };
         //makelist(map.worldTopo.objects.world.geometries);
 
-        // Find link and redirect
+
+        // Find link in countrydata.js and redirect
         function redirectTo(countryCode) {
-            if (USA) {
-                zoomIn(USA);
-            } else if (hasLink(countryCode)) {
-                redirect(link);
-            } else {
+            if (countryData[0][countryCode][1] === null) {
                 return;
+            } else {
+                window.location.href = countryData[0][countryCode][1];
             }
-        }
+        };
 
 
-        // Get data from countrydata.js
+        // Get text from countrydata.js
         function getData(countryCode) {
 
-            if (countryData[0][countryCode] === null) {
+            if (countryData[0][countryCode][0] === null) {
                 return "No data available for this country";
             } else {
-                return countryData[0][countryCode];
+                return countryData[0][countryCode][0];
             }
         };
     </script>
