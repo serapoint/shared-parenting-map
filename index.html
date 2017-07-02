@@ -19,11 +19,6 @@
         <!-- MAP HERE -->
     </div>
 
-    <ul>
-        <!-- LIST OF COUNTRIES HERE -->
-        <p id="list"></p>
-    </ul>
-
 
 
     <script>
@@ -37,7 +32,7 @@
                 };
             }
         }
-        console.log(dataset); //DEBUG
+
 
         //Instantiate Map.
         var map = new Datamap({
@@ -64,7 +59,8 @@
                     ].join('');
                 }
             },
-            //On click function.
+
+            //On click
             done: function(datamap) {
                 datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
                     redirectTo(geography.id); //TODO
@@ -72,19 +68,6 @@
             }
 
         });
-
-
-        //Create list of ocuntries //DEBUG - TEST
-        function makelist(geometries) {
-            var listOfCountries = "";
-            for (i = 0; i < geometries.length; i++) {
-                listOfCountries += "Code: " + geometries[i].properties.iso + " || Name of country: " + geometries[i].properties.name +
-                    "<br>";
-            }
-            document.getElementById('list').innerHTML = listOfCountries;
-        };
-        //makelist(map.worldTopo.objects.world.geometries);
-
 
         // Find link in countrydata.js and redirect
         function redirectTo(countryCode) {
@@ -105,6 +88,23 @@
                 return countryData[0][countryCode][0];
             }
         };
+
+        //DEBUGGIN' from here down bby
+
+        //Show dataset created for the colouring
+        console.log(dataset);
+
+        //Create list of ocuntries
+        function makelist(geometries) {
+            var listOfCountries = "";
+            for (i = 0; i < geometries.length; i++) {
+                listOfCountries += "Code: " + geometries[i].properties.iso + " || Name of country: " + geometries[i].properties.name +
+                    "<br>";
+            }
+            console.log(listOfCountries)
+        };
+        //makelist(map.worldTopo.objects.world.geometries);
+
     </script>
 </body>
 
