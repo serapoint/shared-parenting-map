@@ -81,12 +81,11 @@
             // On click.
             done: function(datamap) {
                 datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-                    redirect(geography.id); //TODO
+                    redirect(geography.id);
                 });
             }
 
         });
-
 
         //Resize the map on window resize.
         d3.select(window).on('resize', function() {
