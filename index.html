@@ -33,7 +33,7 @@
         for (key in countryData[0]) {
             if (countryData[0][key].text != null) {
                 dataset[key] = {
-                    fillColor: "#529b13"
+                    fillColor: "#66a1be"
                 };
             }
         }
@@ -44,7 +44,7 @@
         var map = new Datamap({
             element: document.getElementById('container'),
             fills: {
-                defaultFill: '#F5F5F5'
+                defaultFill: '#dbdbdb'
             },
             data: dataset,
             responsive: true,
@@ -69,9 +69,9 @@
 
                 highlightFillColor: function(data) {
                     if (!data.fillColor) {
-                        return '#dbdbdb';
+                        return '#c9c9c9';
                     } else {
-                        return '#3d740d';
+                        return '#66a1be';
                     }
                 },
                 highlightBorderWidth: 0,
