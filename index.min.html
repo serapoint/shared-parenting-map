@@ -7,82 +7,73 @@
 </head>
 
 <body>
-    <script src="countrydata.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-    <script src="/datamaps.world.min.js"></script>
+<script src="countrydata.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+<script src="/datamaps.world.min.js"></script>
 
-    <div id="container" style="position: relative;">
-    </div>
+<div id="container" style="position: relative;">
+</div>
 
-    <script>
-        dataset = {};
-        for (key in countryData[0]) {
-            if (countryData[0][key].text != null) {
-                dataset[key] = {
-                    fillColor: "#66a1be"
-                };
-            }
-        }
-        var map = new Datamap({
-            element: document.getElementById('container'),
-            fills: {
-                defaultFill: '#dbdbdb'
-            },
-            data: dataset,
-            responsive: true,
-            geographyConfig: {
-                popupTemplate: function(geo, data) {
-                    if (countryData[0][geo.id].text == null) {
-                        return;
-                    }
-                    return ['<div class="hoverinfo"><strong>',
-                        geo.properties.name,
-                        ':</strong> ' + getText(geo.id),
-                        '</div>'
-                    ].join('');
-                },
-                highlightFillColor: function(data) {
-                    if (!data.fillColor) {
-                        return '#c9c9c9';
-                    } else {
-                        return '#66a1be';
-                    }
-                },
-                highlightBorderWidth: 0,
-            },
-            done: function(datamap) {
-                datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-                    redirect(geography.id);
-                });
-            }
-        });
-
-        function getText(countryCode) {
-            if (countryData[0][countryCode].text == null) {
-                return "No data available for this country";
-            } else {
-                var text = countryData[0][countryCode].text;
-                if (countryData[0][countryCode].link != null) {
-                    text = text + " Click on country for more information."
+<script>
+    dataset = {AUS:{fillColor:"#1892bf",onHoverColor:"#126f91"},BEL:{fillColor:"#bf1818",onHoverColor:"#911212"},FRA:{fillColor:"#357336",onHoverColor:"#255026"},NZL:{fillColor:"#ffd900",onHoverColor:"#ccad00"},SWE:{fillColor:"#461b7e",onHoverColor:"#2f1254"},USA:{fillColor:"#ff8533",onHoverColor:"#ff6600"}};        
+    var map = new Datamap({
+        element: document.getElementById('container'),
+        fills: {defaultFill: '#dbdbdb'},
+        data: dataset,
+        responsive: true,
+        geographyConfig: {
+            popupTemplate: function(geo, data) {
+                if (countryData[0][geo.id].text == null) {
+                    return;
                 }
-                return text;
+                return ['<div class="hoverinfo"><strong>',
+                    geo.properties.name,
+                    ':</strong> ' + getText(geo.id),
+                    '</div>'
+                ].join('');
+            },
+            highlightFillColor: function(data) {
+                if (!data.fillColor) {
+                    return '#c2c2c2';
+                } else {
+                    return data.onHoverColor;
+                }
+            },
+            highlightBorderWidth: 0,
+        },
+        done: function(datamap) {
+            datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+                redirect(geography.id);
+            });
+        }
+    });
+
+    function getText(countryCode) {
+        if (countryData[0][countryCode].text == null) {
+            return "No data available for this country";
+        } else {
+            var text = countryData[0][countryCode].text;
+            if (countryData[0][countryCode].link != null) {
+                text = text + " Click on country for more information."
             }
-        };
+            return text;
+        }
+    };
 
-        function redirect(countryCode) {
-            if (countryData[0][countryCode].link == null) {
-                return;
-            } else {
-                window.location.href = countryData[0][countryCode].link;
-            }
-        };
+    function redirect(countryCode) {
+        if (countryData[0][countryCode].link == null) {
+            return;
+        } else {
+            window.location.href = countryData[0][countryCode].link;
+        }
+    };
 
-        d3.select(window).on('resize', function() {
-            map.resize();
-        });
+    d3.select(window).on('resize', function() {
+        map.resize();
+    });
 
-    </script>
+</script>
 
 </body>
 
